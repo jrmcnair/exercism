@@ -3,4 +3,9 @@
 // convenience to get you started writing code faster.
 //
 
-export const twoFer = (input) => `One for ${input ?? "you"}, one for me.`;
+// initial solution
+//export const twoFer = (input) => `One for ${input ?? "you"}, one for me.`;
+
+// final solution
+export const twoFer = (input = "you") =>
+    `One for ${input}, one for me.`;
