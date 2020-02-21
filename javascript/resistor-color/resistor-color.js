@@ -4,7 +4,7 @@
 //
 
 export const colorCode = (color) => {
-    return COLORS.findIndex(x => x == color);
+    return COLORS.indexOf(color);
 };
 
 export const COLORS = [
