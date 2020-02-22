@@ -20,10 +20,7 @@ export const COLORS = [
     "white"
 ];
 
-export const decodedValue = (input) => {
-    return parseInt(
-        input.slice(0,2)
-             .map(colorCode)
-             .join('')
-    );
-};
+export const decodedValue = (input) =>
+    input.slice(0,2)
+         .map(colorCode)
+         .reduce((state, value) => (state * 10) + value);

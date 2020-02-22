@@ -1,6 +1,10 @@
 import { decodedValue } from './resistor-color-duo.js';
 
 describe('Resistor Colors', () => {
+  test('Brown', () => {
+    expect(decodedValue(['brown'])).toEqual(1);
+  });
+
   test('Brown and black', () => {
     expect(decodedValue(['brown', 'black'])).toEqual(10);
   });
