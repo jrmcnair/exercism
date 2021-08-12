@@ -10,10 +10,11 @@ type Planet =
     | Uranus
     | Neptune
 
-let earthSeconds = float 31557600
+[<Literal>]
+let EarthSeconds = 31557600.
 
 let computeAge (seconds: int64) (factor: float) =
-    let earthYears = (float seconds) / earthSeconds
+    let earthYears = (float seconds) / EarthSeconds
     earthYears / factor
 
 let age (planet: Planet) (seconds: int64): float =
