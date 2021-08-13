@@ -8,14 +8,15 @@ let processMinutes (minutes: int) : (int * int) =
     let minute = minutes % 60
     let hourOffset = minutes / 60
 
-    match minute with
-    | x when x >= 0 -> (hourOffset, minute)
-    | _ -> (hourOffset - 1, 60 + minute)
+    if minute >= 0
+        then (hourOffset, minute)
+        else (hourOffset - 1, 60 + minute)
 
 let processHours (hours: int) : int =
-    match hours % 24 with
-    | hour when hour >= 0 -> hour
-    | hour -> 24 + hour
+    let hour = hours % 24
+    if hour >= 0
+        then hour
+        else 24 + hour
 
 let create (hours:int) (minutes: int) =
     let (hourOffset, minute) = processMinutes minutes
