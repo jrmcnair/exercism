@@ -2,28 +2,23 @@
 
 open System
 
-let isAllUppercase (input: string) =
-    let letters = input |> Seq.filter Char.IsLetter
-    if Seq.isEmpty letters
-    then false
-    else letters |> Seq.forall Char.IsUpper
+let private toUnitOption (b: bool) = if b then Some () else None
 
-let (|YelledQuestion|Yelled|Question|Empty|Talking|) (input: string) =
-    let input = input.Trim()
+let (|Empty|_|) (input: string) =
+    input = "" |> toUnitOption
 
-    if String.IsNullOrWhiteSpace input
-    then Empty
-    else
-        match isAllUppercase input, input |> Seq.last = '?' with
-        | true, true -> YelledQuestion
-        | true, false -> Yelled
-        | false, true -> Question
-        | _ -> Talking
+let (|Question|_|) (input: string) =
+    input |> Seq.last = '?' |> toUnitOption
+
+let (|Yelling|_|) (input: string) =
+    (input |> Seq.exists Char.IsLetter
+    && input = input.ToUpper())
+    |> toUnitOption
 
 let response (input: string): string =
-    match input with
-    | YelledQuestion -> "Calm down, I know what I'm doing!"
-    | Yelled ->  "Whoa, chill out!"
-    | Question -> "Sure."
+    match input.Trim() with
     | Empty -> "Fine. Be that way!"
-    | Talking -> "Whatever."
+    | Yelling & Question -> "Calm down, I know what I'm doing!"
+    | Question -> "Sure."
+    | Yelling -> "Whoa, chill out!"
+    | _ -> "Whatever."
