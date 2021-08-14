@@ -31,6 +31,4 @@ let subtract minutes clock =
    create clock.Hours (clock.Minutes - minutes)
 
 let display clock =
-    let to24Hour (num: int) = num.ToString("D2")
-
-    sprintf "%s:%s" (to24Hour clock.Hours) (to24Hour clock.Minutes)
+    sprintf "%02d:%02d" clock.Hours clock.Minutes
