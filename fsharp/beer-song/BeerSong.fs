@@ -19,8 +19,10 @@ let recite (firstBottle: int) (takeDown: int) =
     let lastBottle = firstBottle - takeDown + 1
 
     [lastBottle .. firstBottle]
-    |> List.fold (fun acc bottle ->
-        let (line1, line2) = verse bottle
-        let acc = if List.isEmpty acc then acc else "" :: acc
-        line1 :: line2 :: acc
+    |> List.map (verse)
+    |> List.fold (fun acc (line1, line2) ->
+        match acc with
+        | [] -> line1 :: line2 :: acc
+        | _ -> line1 :: line2 :: "" :: acc
+
     ) []
