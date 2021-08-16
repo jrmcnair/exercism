@@ -32,6 +32,6 @@ let processInstruction robot = function
     | _ -> robot
 
 let move instructions robot =
-    instructions
-    |> Seq.fold(fun state instruction -> processInstruction state instruction) robot
+    (robot, instructions)
+    ||> Seq.fold(fun state instruction -> processInstruction state instruction)
 
