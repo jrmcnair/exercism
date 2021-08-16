@@ -18,9 +18,12 @@ let charToPlant = function
     | 'V' -> Violets
     | _ -> Unknown
 
+let getStudentIndex (student: string) =
+    students |> List.findIndex (fun x -> x = student)
+
 let plants (diagram: string) (student: string) =
     let rows = diagram.Split("\n")
-    let gardenPosition = (students |> List.findIndex (fun x -> x = student)) * 2
+    let gardenPosition = (getStudentIndex student) * 2
 
     [
         rows.[0].[gardenPosition]
