@@ -1,84 +1,39 @@
 module OcrNumbers
 
-type DigitPart =
-    |Horizontal
-    |Left
-    |Right
-    |Sides
-    |LeftAngle
-    |RightAngle
-    |All
-    |Blank
-    |Invalid
-    |Unknown
-
-let toDigitPart = function
-    | x when String.length x <> 3 -> Invalid
-    | " _ " -> Horizontal
-    | "| |" -> Sides
-    | "|  " -> Left
-    | "  |" -> Right
-    | "|_ " -> LeftAngle
-    | " _|" -> RightAngle
-    | "|_|" -> All
-    | "   " -> Blank
-    | _ -> Unknown
-
-let toDigitParts (input:string) =
-    [0..3..(input.Length - 1)]
-    |> List.map (fun x -> input.Substring(x, 3) |> toDigitPart)
+let isValid (input: string list) =
+    input.Length % 4 = 0
+    && input |> List.forall(fun x -> x.Length % 3 = 0)
 
 let toDigit = function
-    | x when x |> List.contains Invalid -> None
-    | [ Horizontal; Sides; All; Blank ] -> Some "0"
-    | [ Blank; Right; Right; Blank ] -> Some "1"
-    | [ Horizontal; RightAngle; LeftAngle; Blank ] -> Some "2"
-    | [ Horizontal; RightAngle; RightAngle; Blank ] -> Some "3"
-    | [ Blank; All; Right; Blank ] -> Some "4"
-    | [ Horizontal; LeftAngle; RightAngle; Blank ] -> Some "5"
-    | [ Horizontal; LeftAngle; All; Blank ] -> Some "6"
-    | [ Horizontal; Right; Right; Blank ] -> Some "7"
-    | [ Horizontal; All; All; Blank ] -> Some "8"
-    | [ Horizontal; All; RightAngle; Blank ] -> Some "9"
-    | _ -> Some "?"
+    | (" _ ", "| |", "|_|") -> "0"
+    | ("   ", "  |", "  |") -> "1"
+    | (" _ ", " _|", "|_ ") -> "2"
+    | (" _ ", " _|", " _|") -> "3"
+    | ("   ", "|_|", "  |") -> "4"
+    | (" _ ", "|_ ", " _|") -> "5"
+    | (" _ ", "|_ ", "|_|") -> "6"
+    | (" _ ", "  |", "  |") -> "7"
+    | (" _ ", "|_|", "|_|") -> "8"
+    | (" _ ", "|_|", " _|") -> "9"
+    | _ -> "?"
 
-let toDigits (parts: DigitPart list list) =
-    [0..(List.length parts.[0] - 1)]
-    |> List.map (fun x -> [ parts.[0].[x]; parts.[1].[x]; parts.[2].[x]; parts.[3].[x] ])
+let toNumber (parsedInput: string list list) =
+    List.zip3 parsedInput.[0] parsedInput.[1] parsedInput.[2]
     |> List.map toDigit
+    |> List.reduce (+)
 
-let toNumber input =
-    let t1 = input |> List.map toDigitParts
-    let t2 = t1 |> toDigits
-    t2 |> List.reduce (Option.map2 (+))
+let parseLine (line: string) =
+    [0..3..(line.Length - 1)]
+    |> List.map (fun idx -> line.Substring(idx, 3))
 
-let toNumbers input =
+let parse (input: string list) =
     input
+    |> List.map parseLine
     |> List.chunkBySize 4
     |> List.map toNumber
+    |> List.reduce (fun x y -> $"{x},{y}")
 
-let combineNumbers numbers =
-    numbers
-    |> List.reduce (
-        Option.map2 (fun x y ->
-            match x with
-            | "" -> y
-            | _ -> $"{x},{y}"
-        )
-    )
-
-let validateInput = function
-    | x when (x |> List.length) % 4 <> 0 -> None
-    | x when x |> List.exists (fun (y: string) -> y.Length % 3 <> 0) -> None
-    | x -> Some x
-
-let convert input =
-    let result =
-        input
-        |> validateInput
-        |> Option.map toNumbers
-        |> Option.map combineNumbers
-
-    match result with
-    | Some number -> number
-    | _ -> None
+let convert (input: string list) =
+    if isValid input
+    then input |> parse |> Some
+    else None
