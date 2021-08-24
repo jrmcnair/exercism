@@ -17,10 +17,10 @@ let toDigit = function
     | (" _ ", "|_|", " _|") -> "9"
     | _ -> "?"
 
-let toNumber (parsedInput: string list list) =
+let toDigits (parsedInput: string list list) =
     List.zip3 parsedInput.[0] parsedInput.[1] parsedInput.[2]
     |> List.map toDigit
-    |> List.reduce (+)
+    |> String.concat ""
 
 let parseLine (line: string) =
     [0..3..(line.Length - 1)]
@@ -30,8 +30,8 @@ let parse (input: string list) =
     input
     |> List.map parseLine
     |> List.chunkBySize 4
-    |> List.map toNumber
-    |> List.reduce (fun x y -> $"{x},{y}")
+    |> List.map toDigits
+    |> String.concat ","
 
 let convert (input: string list) =
     if isValid input
