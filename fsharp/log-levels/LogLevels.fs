@@ -3,23 +3,17 @@ module LogLevels
 open System.Text.RegularExpressions
 
 let parse (logLine: string) : (string * string) =
-    let result = Regex.Match(logLine, "\[(INFO|WARNING|ERROR)\]: (.+)\s*")
+    let result = Regex.Match(logLine, "\[(INFO|WARNING|ERROR)\]: (.+)")
     match result.Success with
-    | true -> (result.Groups.[1], result.Groups.[2])
+    | true -> (result.Groups.[1].Value.ToLower(), result.Groups.[2].Value.Trim())
     | false -> failwith "Invalid log line" 
 
-let message (logLine: string): string =
+let message (logLine: string) : string =
     parse logLine |> snd
 
-let logLevel(logLine: string): string = failwith "Please implement the 'logLevel' function"
+let logLevel (logLine: string): string =
+    parse logLine |> fst
 
-let reformat(logLine: string): string = failwith "Please implement the 'reformat' function"
-(*
-
-let (|Consonant|_|) word =
-    let result = Regex.Match(word, "^([^aeiou]*qu|[^aeiou][^aeiouy]+|[^aeiou]+)(.+)")
-    match result.Success with
-    | true -> Some (result.Groups.[1], result.Groups.[2])
-    | false -> None
-
-*)
+let reformat (logLine: string) : string =
+    let (level, message) = parse logLine
+    $"{message} ({level})"
