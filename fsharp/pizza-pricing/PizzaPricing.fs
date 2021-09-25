@@ -21,9 +21,6 @@ let calculateFee = function
 
 let orderPrice(pizzas: Pizza list): int =
     let fee = pizzas.Length |> calculateFee
-    let cost = 
-        pizzas
-        |> List.map pizzaPrice
-        |> List.fold (+) 0
+    let cost = pizzas |> List.sumBy pizzaPrice 
 
     cost + fee
