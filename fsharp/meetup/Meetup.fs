@@ -4,36 +4,23 @@ open System
 
 type Week = First | Second | Third | Fourth | Last | Teenth
 
-let getStartDate year month week =
-    if week = Last
-    then DateTime(year, month, DateTime.DaysInMonth(year, month))
-    else DateTime(year, month, 1)
+let getDaysForDayOfWeek year month dayOfWeek =
+    [1..DateTime.DaysInMonth(year, month)]
+    |> List.choose (fun day ->
+        if DateTime(year, month, day).DayOfWeek = dayOfWeek
+        then Some day
+        else None)
 
-let getDiff (first: DayOfWeek, last: DayOfWeek) =
-    match (int) last - (int) first with
-    | x when x < 0 -> x + 7
-    | x -> x
-    |> float
+let getTeenthDay days =
+    days |> List.find (fun day -> day > 12)
 
-let getDayShift (date:DateTime) (dayOfWeek: DayOfWeek) (week: Week) =
-    if week = Last
-    then (dayOfWeek, date.DayOfWeek)
-    else (date.DayOfWeek,dayOfWeek)
-    |> getDiff
-
-let rec findTeenth (date: DateTime) =
-    if date.Day < 13
-    then date.AddDays 7. |> findTeenth 
-    else date
-        
 let meetup year month week dayOfWeek =
-    let startDate = getStartDate year month week
-    let shift = getDayShift startDate dayOfWeek week
+    let days = getDaysForDayOfWeek year month dayOfWeek
 
     match week with
-    | First -> shift |> startDate.AddDays
-    | Second -> shift + 7. |> startDate.AddDays
-    | Third -> shift + 14. |> startDate.AddDays
-    | Fourth -> shift + 21. |> startDate.AddDays
-    | Last -> shift * -1. |> startDate.AddDays
-    | Teenth -> shift |> startDate.AddDays |> findTeenth
+    | First -> DateTime(year, month, days |> List.head)
+    | Last -> DateTime(year, month, days |> List.last)
+    | Second -> DateTime(year, month, days.[1])
+    | Third -> DateTime(year, month, days.[2])
+    | Fourth -> DateTime(year, month, days.[3])
+    | Teenth -> DateTime(year, month, days |> getTeenthDay)
