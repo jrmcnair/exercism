@@ -2,10 +2,10 @@
 
 open System
 
-let isIsogram (word: string) =
+let isIsogram (str: string) =
     let letters =
-        word
-        |> Seq.filter(fun letter -> letter <> ' ' && letter <> '-')
-        |> Seq.map Char.ToLower
+        str.ToLower()
+        |> Seq.filter Char.IsLetter
+        |> Seq.toList
 
-    letters |> Seq.length = (letters |> Seq.distinct |> Seq.length)
+    letters = List.distinct letters
