@@ -1,13 +1,26 @@
 module TisburyTreasureHunt
 
+open System
+
 let getCoordinate (line: string * string): string =
-    failwith "Please implement the 'getCoordinate' function"
+    snd line
 
-let convertCoordinate (coordinate: string): int * char = 
-    failwith "Please implement the 'convertCoordinate' function"
+let convertCoordinate (coordinate: string): int * char =
+    (Char.GetNumericValue coordinate.[0] |> int, coordinate.[1])
 
-let compareRecords (azarasData: string * string) (ruisData: string * (int * char) * string) : bool = 
-    failwith "Please implement the 'compareRecords' function"
+let compareRecords (azarasData: string * string) (ruisData: string * (int * char) * string) : bool =
+    let c1 =
+        azarasData
+        |> getCoordinate
+        |> convertCoordinate
+    let (_, c2, _) = ruisData
+    c1 = c2
 
 let createRecord (azarasData: string * string) (ruisData: string * (int * char) * string) : (string * string * string * string) =
-    failwith "Please implement the 'createRecord' function"
+    if compareRecords azarasData ruisData
+        then
+            let (treasure, coords) = azarasData
+            let (location, _, quadrant) = ruisData
+            (coords, location, quadrant, treasure)
+        else ("", "", "", "")
+

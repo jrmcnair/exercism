@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Help\HELP.md" />
+    <None Include="Help\HINTS.md" />
+    <None Include="Help\README.md" />
     <Compile Include="TisburyTreasureHunt.fs" />
     <Compile Include="TisburyTreasureHuntTests.fs" />
   </ItemGroup>
