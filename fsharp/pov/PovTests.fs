@@ -49,12 +49,12 @@ let ``Can reroot a complex tree with cousins`` () =
     let expected = mkGraph "x" [mkGraph "kid-1" []; mkGraph "kid-0" []; mkGraph "parent" [mkGraph "sibling-0" []; mkGraph "sibling-1" []; mkGraph "grandparent" [mkGraph "uncle" [mkGraph "cousin-0" []; mkGraph "cousin-1" []]]]]
     fromPOV "x" tree |> mapToList  |> should equal <| graphToList expected
 
-[<Fact(Skip = "Remove this Skip property to run this test")>]
+[<Fact>]
 let ``Errors if target does not exist in a singleton tree`` () =
     let tree = mkGraph "x" []
     fromPOV "nonexistent" tree  |> should equal None
 
-[<Fact(Skip = "Remove this Skip property to run this test")>]
+[<Fact>]
 let ``Errors if target does not exist in a large tree`` () =
     let tree = mkGraph "parent" [mkGraph "x" [mkGraph "kid-0" []; mkGraph "kid-1" []]; mkGraph "sibling-0" []; mkGraph "sibling-1" []]
     fromPOV "nonexistent" tree  |> should equal None
