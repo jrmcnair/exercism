@@ -1,4 +1,4 @@
-export const RNAI_MAP = new Map([
+const RNAI_MAP = new Map([
   ['G', 'C'],
   ['C', 'G'],
   ['T', 'A'],
