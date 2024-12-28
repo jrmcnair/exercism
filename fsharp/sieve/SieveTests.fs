@@ -5,13 +5,10 @@ open Xunit
 
 open Sieve
 
+
 [<Fact>]
-let ``test`` () =
-    primes 9 |> should equal [2;3;5;7]
-//
-// [<Fact>]
-// let ``No primes under two`` () =
-//     primes 1 |> should be Empty
+let ``No primes under two`` () =
+    primes 1 |> should be Empty
 
 [<Fact>]
 let ``Find first prime`` () =
