@@ -1,24 +1,18 @@
 module ProteinTranslation
 
-let toCodons (rna: string) =
-    rna
-    |> Seq.chunkBySize 3
-    |> Seq.map System.String
-    |> List.ofSeq
-
 let proteins (rna: string) =
-    let rec translate (codons: string list) (output: string list) =
-        if codons.Length = 0 then List.rev output
+    let rec translate (rna: string) (output: string list) =
+        if rna.Length = 0 then List.rev output
         else
-            match List.head codons, List.tail codons with
-            | "AUG", c -> translate c ("Methionine"::output)
-            | "UUU", c | "UUC", c -> translate c ("Phenylalanine"::output)
-            | "UUA", c | "UUG", c -> translate c ("Leucine"::output)
-            | "UCU", c | "UCC", c | "UCA", c | "UCG", c -> translate c ("Serine"::output)
-            | "UAU", c | "UAC", c -> translate c ("Tyrosine"::output)
-            | "UGU", c | "UGC", c -> translate c ("Cysteine"::output)
-            | "UGG", c -> translate c ("Tryptophan"::output)
-            | "UAA", _ | "UAG", _ | "UGA", _ -> List.rev output
+            match rna[0..2] with
+            | "AUG" -> translate rna[3..] ("Methionine"::output)
+            | "UUU" | "UUC" -> translate rna[3..] ("Phenylalanine"::output)
+            | "UUA" | "UUG" -> translate rna[3..] ("Leucine"::output)
+            | "UCU" | "UCC" | "UCA" | "UCG" -> translate rna[3..] ("Serine"::output)
+            | "UAU" | "UAC" -> translate rna[3..] ("Tyrosine"::output)
+            | "UGU" | "UGC" -> translate rna[3..] ("Cysteine"::output)
+            | "UGG" -> translate rna[3..] ("Tryptophan"::output)
+            | "UAA" | "UAG" | "UGA" -> List.rev output
             | _ -> failwith "invalid codon"
 
-    translate (toCodons rna) []
+    translate rna []
