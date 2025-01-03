@@ -6,9 +6,7 @@ type Node<'a> =
     mutable Right: Node<'a> option }
 
 let left node  = node.Left
-
 let right node = node.Right
-
 let data node = node.Value
 
 let create (items: 'a list) =
@@ -27,14 +25,10 @@ let create (items: 'a list) =
     |> Seq.iter (fun v -> add { Value = v; Left = None; Right = None } root)
     
     root
-    
 
 let sortedData node =
-    let rec sort (node: Node<'a>) : 'a list =
-        match node.Left, node.Right with
-        | Some l, Some r -> sort l @ [ node.Value ] @ sort r
-        | Some l, None -> sort l @ [ node.Value ]
-        | None, Some r -> node.Value::(sort r)
-        | None, None -> [ node.Value ]
-    
-    sort node
+    let rec sort = function
+        | Some node -> sort node.Left @ [ node.Value ] @ sort node.Right
+        | None -> []
+
+    Some node |> sort
