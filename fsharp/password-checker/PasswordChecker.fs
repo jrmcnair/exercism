@@ -1,5 +1,7 @@
 module PasswordChecker
 
+open System
+
 type PasswordError =
     | LessThan12Characters
     | MissingUppercaseLetter
@@ -7,24 +9,15 @@ type PasswordError =
     | MissingDigit
     | MissingSymbol
 
-let checkLength (password: string) =
-    if String.length password < 12
-    then Result.Error LessThan12Characters
-    else Ok password
-
-let checkCharacters (chars: char seq) (error: PasswordError) (password:string) =
-    if chars |> Seq.exists password.Contains
-    then Ok password
-    else Error error
-
 let checkPassword (password:string) : Result<string, PasswordError> =
-    password |> checkLength
-    |> Result.bind (checkCharacters (seq {'A' .. 'Z'}) MissingUppercaseLetter)
-    |> Result.bind (checkCharacters (seq {'a' .. 'z'}) MissingLowercaseLetter)
-    |> Result.bind (checkCharacters (seq {'0' .. '9'}) MissingDigit)
-    |> Result.bind (checkCharacters "!@#$%^&*" MissingSymbol) 
+    match password with
+    | _ when password.Length < 12 -> Error LessThan12Characters
+    | _ when not (password |> Seq.exists Char.IsUpper) -> Error MissingUppercaseLetter
+    | _ when not (password |> Seq.exists Char.IsLower) -> Error MissingLowercaseLetter
+    | _ when not (password |> Seq.exists Char.IsDigit) -> Error MissingDigit
+    | _ when not (password |> Seq.exists "!@#$%^&*".Contains) -> Error MissingSymbol
+    | _ -> Ok password
 
-/// Return a human-readable message indicating the meaning of the given result value.
 let getStatusMessage (result: Result<string, PasswordError>) : string =
     match result with
     | Ok _ -> "OK"
